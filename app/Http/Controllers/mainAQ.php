@@ -17,6 +17,22 @@ class mainAQ extends Controller {
 		return view('mainUI/main');
 	}
 
+	public function body()
+	{
+		return view('mainUI/body');
+	}
+
+
+	public function lab()
+	{
+		return view('mainUI/bodylab');
+	}
+
+
+	public function colladaBody()
+	{
+		return view('mainUI/collada');
+	}
 	/**
 	 * Show the form for creating a new resource.
 	 *

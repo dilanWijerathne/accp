@@ -66,13 +66,15 @@
 							var loader = new THREE.ColladaLoader();
 							var lastTimestamp = 0;
 							var progress = 0;
-
-							loader.load( 'three/examples/models/collada/pump/pump.dae', function ( collada ) {
+                             //  monster       three/examples/models/collada/pump/pump.dae
+                            var oldPATH='three/examples/models/collada/pump/pump.dae';
+                            var newPATH='three/examples/models/collada/monster.dae';
+							loader.load(newPATH , function ( collada ) {
 
 								model = collada.scene;
 								animations = collada.animations;
 								kfAnimationsLength = animations.length;
-								model.scale.x = model.scale.y = model.scale.z = 0.125; // 1/8 scale, modeled in cm
+								model.scale.x = model.scale.y = model.scale.z = 0.23; // 1/8 scale, modeled in cm
 
 								init();
 								start();
