@@ -17,7 +17,16 @@ Route::get('/', 'mainAQ@index');
 Route::get('home', 'mainAQ@index');
 Route::get('body', 'mainAQ@body');
 Route::get('lab', 'mainAQ@lab');
+Route::get('test', 'mainAQ@test');
 Route::get('man', 'mainAQ@colladaBody');
+
+// accupresure
+Route::get('accu_json_req', 'mainAQ@Json_build_ACC_treatment');
+
+Route::get('read', 'mainAQ@readJ');
+
+
+
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',

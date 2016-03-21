@@ -1,9 +1,14 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\Controller;
+//use Illuminate\Http\Request;
+use Input;
 
-use Illuminate\Http\Request;
+
+
+
 
 class mainAQ extends Controller {
 
@@ -22,6 +27,10 @@ class mainAQ extends Controller {
 		return view('mainUI/body');
 	}
 
+public function test()
+	{
+		return view('mainUI/test');
+	}
 
 	public function lab()
 	{
@@ -38,9 +47,81 @@ class mainAQ extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function Json_build_ACC_treatment()
 	{
-		//
+		$input = Request::all();
+		$json_request=$input;
+
+		$myFile = "json/medi.json";
+   		$arr_data = array(); // create empty array
+
+			  try
+			  {
+				   //Get form data
+				   $formdata = array(
+				      'x'	=>	 $json_request['x'],
+				      'y'	=>	 $json_request['y'],
+				      'h'	=> 	 $json_request['h']
+				   );
+
+				   $xData=array(
+				   	"A"=> $formdata
+				   	);
+				   //Get data from existing json file
+				   $jsondata = file_get_contents($myFile);
+
+				   // converts json data into array
+				   $arr_data = json_decode($jsondata, true);
+
+				   // Push user data to array
+				   array_push($arr_data,$xData);
+
+			       //Convert updated array to JSON
+				   $jsondata = json_encode($arr_data, JSON_PRETTY_PRINT);
+				   
+				   //write json data into data.json file
+				   if(file_put_contents($myFile, $jsondata)) {
+				        echo 'Data successfully saved';
+				    }
+				   else 
+				        echo "Cannot";
+
+			   }
+			   catch (Exception $e) {
+			            echo 'Caught exception: ',  $e->getMessage(), "\n";
+			   }
+
+	}
+
+
+
+
+
+
+
+/*read json from di*/
+	public function readJ(){
+		$input = Request::all();
+		$json_request=$input;
+
+		$myFile = "json/medi.json";
+   	
+
+			  try
+			  {
+				   
+				   //Get data from existing json file
+				   $jsondata = file_get_contents($myFile);
+
+				   // converts json data into array
+				   $arr_data = json_decode($jsondata, true);
+
+					echo  json_encode($arr_data);
+
+			   }
+			   catch (Exception $e) {
+			            echo 'Caught exception: ',  $e->getMessage(), "\n";
+			   }
 	}
 
 	/**

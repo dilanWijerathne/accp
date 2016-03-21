@@ -8,16 +8,124 @@
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-	<!-------->
+	<!---->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/sequaPayStyle.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 
-	<script >
+	
+
+	<script language="JavaScript">
+
+	var accu_points=[];  // Selected accu points 
+
+	function point_it(event){
+
+	
+		pos_x = event.offsetX?(event.offsetX):event.pageX-document.getElementById("pointer_div").offsetLeft;
+		pos_y = event.offsetY?(event.offsetY):event.pageY-document.getElementById("pointer_div").offsetTop;
+		document.getElementById("cross").style.left = (pos_x-1)+"px" ;
+		document.getElementById("cross").style.top = (pos_y-15)+"px" ;
+		document.getElementById("cross").style.visibility = "visible" ;
+		document.pointform.form_x.value = pos_x;
+		document.pointform.form_y.value = pos_y;
+
+		accu_points.push(pos_x+"|"+pos_y);
+	//	console.log(accu_points);
+
+		alert("X: "+pos_x+" @ "+" Y: "+pos_y);
+	}
+
+
+
+	function treatLearn(){
+
+		var i;
+		for (i = 0; i < accu_points.length; i++) {
+		    var point  = accu_points[i];
+		    var axis =point.split("|");
+		  
+		    console.log(axis[1]);
+
+		    var x=axis[0];
+		    var y=axis[1];
+
+
+		     $.ajax({
+             url :  "accu_json_req",
+             type: "GET",
+             data : {'x': x, 'y': y, 'h': point},
+             success: function(data)
+             {
+				if (data == "Data successfully saved") {
+					
+					set_points(355,400);
+					//alert("Done");
+				//	console.log(data);
+                   	
+               }
+                else {
+					
+					alert("No data in the system");
+				}
+                                                                
+               }
+               }); 
+		}
+
+
 		
-		</script>
+	}
+
+	function treat(){
+
+		var i;
+		for (i = 0; i < accu_points.length; i++) {
+		    var point  = accu_points[i];
+		    var axis =point.split("|");
+		  
+		    console.log(axis[1]);
+
+		    var x=axis[0];
+		    var y=axis[1];
+
+
+		     $.ajax({
+             url : "read",        // "accu_json_req",
+             type: "GET",
+             data : {'x': x, 'y': y, 'h': point},
+             success: function(data)
+             {
+	
+						console.log(data);
+
+                                                                
+               }
+               }); 
+		}
+//  770781947
+
+		
+	}
+
+
+	function set_points(x,y){
+		document.getElementById("cross-on-hand").style.left = (x-1)+"px" ;
+		document.getElementById("cross-on-hand").style.top = (y-15)+"px" ;
+		document.getElementById("cross-on-hand").style.visibility = "visible" ;
+		document.pointform.form_x.value = x;
+		document.pointform.form_y.value = y;
+	}
+
+
+	function get_accu_points(){
+		 
+	}
+
+	</script>
+
 	<style>
 	#d{ position:absolute; width: 100%; text-align:center; margin:1em 0 -4.5em 0; z-index:1000; }
 	#leftBar{float: left; margin-left: 10px;}
@@ -37,11 +145,9 @@
 	<div id="d">
 		<div id="info">
 			<P>AQSTES</p>
-
 		</div>
 
 		<div id="buttons_Aq" class="bwrap">
-
 			<div id="leftBar">
 				<ul id="leftBarList">
 					<li><button class="btn btn-primary l-button" data-toggle="modal" data-target="#front_hand" data-whatever="@mdo" id="settings">Front Hand</button></li> <br>
@@ -53,23 +159,12 @@
 			</div>
 			<button class="btn btn-primary" data-toggle="modal" data-target="#Modal0" data-whatever="@mdo" id="settings">Digonosis</button>
 			<button class="btn btn-primary" data-toggle="modal" data-target="#Modal1" data-whatever="@mdo" id="settings">Settings</button>
-			
-
-
 		</div>
-
-		<div id="buttons_materials" class="bwrap"></div>
-
-
-
-
-
-
-
 	</div>
 	<!---->
 
 	<script>
+
 		var control,camera,scene,renderer,width,height,asalogo,degree;
 		width=window.innerWidth;
 		height=window.innerHeight;
@@ -83,7 +178,7 @@
 			asalogo.scale.set(20,20,20);  // body shape 
 			asalogo.position.set(50,100,56);
 			asalogo.rotation.set(0,2 * degree,0);
-			console.log(asalogo);
+		//	console.log(collada);
 			start();
 			animate();
 
@@ -115,12 +210,11 @@
 			var pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
 			scene.add( pointLightHelper );
 
-			//scene.add(box);
-			//scene.add(ball);
-			//scene.add(plane);
+			
 			scene.add(light);
 			scene.add(light2);
 			scene.add(asalogo);
+
 
 			renderer=new THREE.WebGLRenderer();
 			renderer.setClearColor(0xffffff);
@@ -132,119 +226,37 @@
 		function animate(){
 			requestAnimationFrame(animate);
 			control.update();
+			console.log(animate);
 		}
 
 		function render(){
 			renderer.render(scene,camera);
 		}
 
-
-
-
-
-////
-
-
-
-var mouse = {
-    getIntersects: function( camera, sceneChildren, event ){
-        event = event || window.event;
-
-        var mouseX = ( event.clientX / window.innerWidth ) * 2 - 1;
-        var mouseY = -( event.clientY / window.innerHeight ) * 2 + 1;
-
-        var vector = new THREE.Vector3( mouseX, mouseY, camera.near );
-            vector.unproject( camera );
-
-        var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-
-        var intersects = raycaster.intersectObjects( sceneChildren );
-
-        if ( intersects.length > 0 ) {
-            //console.log(intersects);
-            return intersects;
-        }
-        return false;
-    },
-
-    Position3D: function(sceneChildren){
-        var intersects = mouse.getIntersects( sceneChildren );
-        return intersects[0].point
-      //  alert(intersects[0].point);
-    }
-}
-
-
-
-///
-
 	</script>
+
+	
 	<!-- Digonosis -->
 	<div class="modal fade toggle_fonts" id="Modal0" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="ModalLabel"><i class="fa fa-users"> &nbsp;Dogonosis </i></h4>
-				</div>
-				<div class="modal-body">
-
-					<script type="text/javascript">
-							
-					</script>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-
-	<!-- Settings -->
-	<div class="modal fade toggle_fonts" id="Modal1" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="ModalLabel"><i class="fa fa-users"> &nbsp;Setup this body </i></h4>
-				</div>
-				<div class="modal-body">
-
-					<form action="#" method="post">
-						<div class="form-group">
-							<label for="message" class="control-label">Do You want to logout from sequapay ?</label>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" hover active data-dismiss="modal">No</button>
-							<button type="submit" id ="btnLogout" name="logout" value="logout" class="btn btn-default"hover active ">Yes</button></div>
-					</form>
+					<h4 class="modal-title" id="ModalLabel"><i class="fa fa-users"> &nbsp;Dogonosis </i></h4>				
+						<form name="pointform" method="post">
+							<div id="pointer_div" onclick="point_it(event)" style = "background-image:url('images/girl.png');width:500px;height:900px;">
+								<img src="images/point-icon.png" id="cross" style="position:relative;visibility:hidden;z-index:2;">
+							</div>
+							You pointed on x = <input id="x" type="text" name="form_x" size="4" /> - y = <input id="y" type="text" name="form_y" size="4" />
+						</form> 
+						<input type="button" value="treat" onclick="treat()">
 				</div>
 			</div>
 		</div>
 	</div>
 
 
-	<!-- Settings -->
-	<div class="modal fade toggle_fonts" id="Modal2" tabindex="-1" role="dialog" aria-labelledby="ModalLabel">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="ModalLabel"><i class="fa fa-users"> &nbsp;Logout </i></h4>
-				</div>
-				<div class="modal-body">
 
-					<form action="#" method="post">
-						<div class="form-group">
-							<label for="message" class="control-label">Do You want to logout from sequapay ?</label>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" hover active data-dismiss="modal">No</button>
-							<button type="submit" id ="btnLogout" name="logout" value="logout" class="btn btn-default"hover active ">Yes</button></div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
 
 
 	<!-- Font hand-->
@@ -257,18 +269,22 @@ var mouse = {
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 					<h4 class="modal-title" id="ModalLabel"><i class="fa fa-medkit"></i> &nbsp;Front hand </i></h4>
 				</div>
-				<div class="modal-body">
 
+				<div class="modal-body">
 					<form action="#" method="post">
 						<div class="form-group col-md-12" >
 							<label for="message" class="control-label">Select limps on hand</label><br>
-							<div class="col-md-8"><img src="images/front_hand.png" width="600px" height="400px;"></div>
+							<div class="col-md-8"   style = "background-image:url('images/front_hand.png');width:900px;height:600px;">
+								<img src="images/point-icon.png" id="cross-on-hand" style="position:relative;visibility:hidden;z-index:2;">
+							</div>
 							<div class="col-md-4"><p for="message" class="control-label">Some description goes here with accu points </p></div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" hover active data-dismiss="modal">No</button>
-							<button type="submit" id ="btnLogout" name="logout" value="logout" class="btn btn-default"hover active ">Yes</button></div>
+							
+						</div>
 					</form>
+							<button type="button" class="btn btn-default" hover active data-dismiss="modal">No</button>
+							<button type="submit" id ="btnLogout" name="logout" value="logout" class="btn btn-default">Yes</button>
 				</div>
 			</div>
 		</div>
